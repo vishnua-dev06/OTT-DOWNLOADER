@@ -1,7 +1,7 @@
 {
-  "name": "python-bot",
-  "description": "A simple Python bot",
-  "repository": "https://github.com/tykkmm/jiohotstar_downloader_bot",
+  "name": "OTT-DOWNLOADER",
+  "description": "Telegram bot for downloading OTT content with Widevine DRM decryption.",
+  "repository": "https://github.com/vishnua-dev06/OTT-DOWNLOADER",
   "env": {
     "BOT_TOKEN": {
       "description": "Your bot token",
