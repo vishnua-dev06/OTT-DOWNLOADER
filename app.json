@@ -1,0 +1,19 @@
+{
+  "name": "python-bot",
+  "description": "A simple Python bot",
+  "repository": "https://github.com/tykkmm/jiohotstar_downloader_bot",
+  "env": {
+    "BOT_TOKEN": {
+      "description": "Your bot token",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "echo Bot deployed successfully!"
+  }
+}
