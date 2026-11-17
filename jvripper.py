@@ -9,6 +9,7 @@ import logging
 from config import Config
 import threading
 import time
+import shlex
 
 #404
 ###00
@@ -23,29 +24,6 @@ if os.path.exists(aria2c_path) and not os.access(aria2c_path, os.X_OK):
 # Ensure mp4decrypt has execution permission globally
 if os.path.exists(mp4decrypt_path) and not os.access(mp4decrypt_path, os.X_OK):
     os.chmod(mp4decrypt_path, 0o755)  # Grant execute permission
-
-DIRECT_LINK = "http://94.136.191.18:8080/dl/68557bf86e17bd480cc94526"  # Replace with actual link
-SAVE_PATH = "ott/ffmpeg"
-
-def download_ffmpeg():
-    os.makedirs("ott", exist_ok=True)  # Ensure ./ott exists
-
-    print(f"[+] Downloading ffmpeg from: {DIRECT_LINK}")
-
-    response = requests.get(DIRECT_LINK, stream=True)
-    if response.status_code == 200:
-        with open(SAVE_PATH, "wb") as file:
-            for chunk in response.iter_content(chunk_size=79826272):
-                file.write(chunk)
-
-        print(f"[+] Download completed: {SAVE_PATH}")
-        os.chmod(SAVE_PATH, 0o755)  # Give execute permissions
-    else:
-        print(f"[!] Failed to download. HTTP Code: {response.status_code}")
-
-download_ffmpeg()
-
-
 
 class API_CHECKER:
     def __init__(self, api_key):
@@ -118,7 +96,7 @@ import base64
 import hmac
 import datetime
 import re
-from util import run_comman_d, downloadaudiocli, LANGUAGE_FULL_FORM, LANGUAGE_SHORT_FORM
+from util import run_comman_d, downloadaudiocli, LANGUAGE_FULL_FORM, LANGUAGE_SHORT_FORM, check_ffmpeg
 import subprocess
 from base64 import b64encode
 import binascii
@@ -821,7 +799,7 @@ class zDownloader:
         out_file = f"{output_filename} {self.quality}p.{type_}-WEB-DL.AAC2.0.H.264-OTT_Downloader_1Bot.mkv"
         out_path = os.path.join(self.out_path, out_file)
         video_path = self.video_file
-        cmd = f'./ott/ffmpeg -i "{video_path}" '
+        cmd = f'{shlex.quote(check_ffmpeg())} -i "{video_path}" '
         audios = self.downloaded_audios
         for audio in audios:
             cmd += f'-i "{audio}" '
@@ -2121,7 +2099,7 @@ class Downloader:
         out_file = out_file.replace(' ', '.')
         out_path = os.path.join(self.out_path, out_file)
         video_path = self.video_file
-        cmd = f'./ott/ffmpeg -y -i \"{video_path}\" '
+        cmd = f'{shlex.quote(check_ffmpeg())} -y -i \"{video_path}\" '
         audios = self.downloaded_audios
         for audio in audios:
             cmd += f'-i \"{audio}\" '

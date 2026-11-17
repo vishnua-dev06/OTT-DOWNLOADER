@@ -5,6 +5,7 @@ import time
 import re
 import os
 import requests
+import shutil
 from slugify import slugify
 from ott import *
 from PIL import Image
@@ -17,6 +18,21 @@ from config import Config
 
 
 LOGGER = logging.getLogger(__name__)
+
+FFMPEG_PATH = None
+
+
+def check_ffmpeg():
+    """Locate the system FFmpeg executable once and return its path."""
+    global FFMPEG_PATH
+    if FFMPEG_PATH is None:
+        FFMPEG_PATH = shutil.which("ffmpeg")
+    if FFMPEG_PATH is None:
+        raise RuntimeError(
+            "FFmpeg is not installed or is not available on PATH. "
+            "Install it with 'apt-get update && apt-get install -y --no-install-recommends ffmpeg'."
+        )
+    return FFMPEG_PATH
 
 AUDIO_SUFFIXES = ("MP3", "M4A", "M4B", "FLAC", "WAV", "AIF", "OGG", "AAC", "DTS", "MID", "AMR", "MKA")
 VIDEO_SUFFIXES = ("M4V", "MP4", "MOV", "FLV", "WMV", "3GP", "MPG", "WEBM", "MKV", "AVI")
@@ -139,7 +155,7 @@ async def take_ss(video_file, contentID=None):
 
     # 🔁 Fallback to ffmpeg
     await downloadaudiocli([
-        "./ott/ffmpeg", "-hide_banner", "-loglevel", "error",
+        check_ffmpeg(), "-hide_banner", "-loglevel", "error",
         "-ss", str(half_duration),
         "-i", video_file,
         "-frames:v", "1",

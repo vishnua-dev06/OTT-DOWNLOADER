@@ -788,6 +788,12 @@ async def tg_uploader(input_str, user_id, sts_msg):
             pass
 
 async def StartBot():
+    try:
+        ffmpeg_path = check_ffmpeg()
+        print(f"FFmpeg detected at {ffmpeg_path}")
+    except RuntimeError as error:
+        log.critical(str(error))
+        raise SystemExit(1)
     await TGBot.start()
     # if TGUser:
     #     await TGUser.start()
